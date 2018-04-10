@@ -1,0 +1,19 @@
+[package]
+name = "svenfs"
+version = "0.1.0"
+authors = ["Sven-Hendrik Haase <svenstaro@gmail.com>"]
+description = "A useless filesystem"
+homepage = "htts://github.com/svenstaro/svenfs"
+repository = "htts://github.com/svenstaro/svenfs"
+readme = "README.md"
+keywords = ["fuse", "filesystem"]
+categories = ["filesystem"]
+license = "MIT"
+
+[dependencies]
+fuse = "0.3"
+time = "0.1"
+libc = "0.2"
+clap = "2"
+ctrlc = { version = "3", features = ["termination"] }
+rainbowcoat = "0.1"
