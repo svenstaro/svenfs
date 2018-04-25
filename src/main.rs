@@ -70,6 +70,10 @@ fn alexrc() -> Vec<u8> {
     make_pretty_rainbow("Ich hasse alles außer Sven.")
 }
 
+fn mariorc() -> Vec<u8> {
+    make_pretty_rainbow("Anxiety")
+}
+
 fn svenrc() -> Vec<u8> {
     make_pretty_rainbow(
         "
@@ -114,10 +118,12 @@ impl Filesystem for SvenFS {
         let ttl = Timespec::new(1, 0);
         if parent == 1 && name.to_str() == Some(".alexrc") {
             reply.entry(&ttl, &file_attr(2, alexrc().len() as u64), 0);
+        } else if parent == 1 && name.to_str() == Some(".mariorc") {
+            reply.entry(&ttl, &file_attr(3, mariorc().len() as u64), 0);
         } else if parent == 1 && name.to_str() == Some(".svenrc") {
-            reply.entry(&ttl, &file_attr(3, svenrc().len() as u64), 0);
+            reply.entry(&ttl, &file_attr(4, svenrc().len() as u64), 0);
         } else if parent == 1 && name.to_str() == Some(".tronjerc") {
-            reply.entry(&ttl, &file_attr(4, tronjerc().len() as u64), 0);
+            reply.entry(&ttl, &file_attr(5, tronjerc().len() as u64), 0);
         } else {
             reply.error(ENOENT);
         }
@@ -128,8 +134,9 @@ impl Filesystem for SvenFS {
         match ino {
             1 => reply.attr(&ttl, &dir_attr(1, 5)),
             2 => reply.attr(&ttl, &file_attr(2, alexrc().len() as u64)),
-            3 => reply.attr(&ttl, &file_attr(3, svenrc().len() as u64)),
-            4 => reply.attr(&ttl, &file_attr(4, tronjerc().len() as u64)),
+            3 => reply.attr(&ttl, &file_attr(4, mariorc().len() as u64)),
+            4 => reply.attr(&ttl, &file_attr(4, svenrc().len() as u64)),
+            5 => reply.attr(&ttl, &file_attr(5, tronjerc().len() as u64)),
             _ => reply.error(ENOENT),
         }
     }
@@ -140,10 +147,14 @@ impl Filesystem for SvenFS {
             let read_size = read_end(data_size, offset as u64, size);
             reply.data(&data_buf[offset as usize..read_size]);
         } else if ino == 3 {
-            let (data_buf, data_size) = (svenrc(), svenrc().len() as u64);
+            let (data_buf, data_size) = (mariorc(), mariorc().len() as u64);
             let read_size = read_end(data_size, offset as u64, size);
             reply.data(&data_buf[offset as usize..read_size]);
         } else if ino == 4 {
+            let (data_buf, data_size) = (svenrc(), svenrc().len() as u64);
+            let read_size = read_end(data_size, offset as u64, size);
+            reply.data(&data_buf[offset as usize..read_size]);
+        } else if ino == 5 {
             let (data_buf, data_size) = (tronjerc(), tronjerc().len() as u64);
             let read_size = read_end(data_size, offset as u64, size);
             reply.data(&data_buf[offset as usize..read_size]);
@@ -158,8 +169,9 @@ impl Filesystem for SvenFS {
                 reply.add(1, 0, FileType::Directory, ".");
                 reply.add(1, 1, FileType::Directory, "..");
                 reply.add(2, 2, FileType::RegularFile, ".alexrc");
-                reply.add(3, 3, FileType::RegularFile, ".svenrc");
-                reply.add(4, 4, FileType::RegularFile, ".tronjerc");
+                reply.add(3, 3, FileType::RegularFile, ".mariorc");
+                reply.add(4, 4, FileType::RegularFile, ".svenrc");
+                reply.add(5, 5, FileType::RegularFile, ".tronjerc");
             }
             reply.ok();
         } else {
